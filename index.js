@@ -1,4 +1,4 @@
-import createServer from "./server";
+import createServer from "./server.js";
 
 const app = await createServer(3000);
 
