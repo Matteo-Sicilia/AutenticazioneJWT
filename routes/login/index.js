@@ -7,7 +7,10 @@ const bodySchema = S.object()
 export default async function (app) {
     app.post("/", { schema: { body: bodySchema } }, async (req, res) => {
         const { username, password } = req.body;
-        const result = await app.pg.query("SELECT * FROM users WHERE username = $1 AND password = $2", [username, password]);
+        const result = await app.pg.query(
+            "SELECT * FROM users WHERE username = $1 AND password = $2",
+            [username, password]
+        );
 
         app.log.warn(result.rows);
         return { hello: "world" };
