@@ -1,13 +1,19 @@
 export default async function (app) {
     app.get("/", async (req, res) => {
-        const auth = req.headers["authorization"];
+        try {
+            const { payload } = await req.jwtVerify();
 
-        if (auth) {
-            const token = auth.split(" ")[1];
-            const decoded = app.jwt.verify(token);
-            app.log.warn(decoded);
+            if (payload.role === "admin") {
+                const result = await app.pg.query("SELECT * FROM users");
+                return result.rows;
+            } else {
+                const result = await app.pg.query(
+                    "SELECT * FROM users WHERE id = $1",
+                    [payload.userId]
+                );
+            }
+        } catch (e) {
+            throw app.httpErrors.unauthorized("Invalid token");
         }
-
-        return [];
     });
 }

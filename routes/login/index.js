@@ -24,7 +24,15 @@ export default async function (app) {
             role: username === "admin" ? "admin" : "standard",
         };
 
-        const accessToken = app.jwt.sign({ payload }, {expiresIn: "1h"});
-        return { accessToken: accessToken };
+        const refreshPayload = {
+            userId: user.id,
+        };
+
+        const accessToken = app.jwt.sign({ payload }, { expiresIn: "1h" });
+        const refreshToken = app.jwt.sign(
+            { payload: refreshPayload },
+            { expiresIn: "7d" }
+        );
+        return { accessToken, refreshToken };
     });
 }
