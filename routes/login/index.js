@@ -1,13 +1,15 @@
 import S from "fluent-json-schema";
-import pg from "pg";
 
-const bodySchema = S.object()
-    .prop("username", S.string().required())
-    .prop("password", S.string().required());
+const bodySchema = S.object().prop("refreshToken", S.string().required());
 
 export default async function (app) {
     app.post("/", { schema: { body: bodySchema } }, async (req, res) => {
-        const { username, password } = req.body;
+        const { userId, refresh } = app.jwt.verify(req.body.refreshToken);
+
+        if (refresh !== true) {
+            throw app.httpErrors.badRequest("Invalid token");
+        }
+
         const result = await app.pg.query(
             "SELECT * FROM users WHERE username = $1 AND password = $2",
             [username, password]
