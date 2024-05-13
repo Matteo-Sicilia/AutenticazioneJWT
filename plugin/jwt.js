@@ -1,7 +1,6 @@
 import fastifyJwt from "@fastify/jwt";
 import fastifyPlugin from "fastify-plugin";
 
-
 async function jwt(app) {
     await app.register(fastifyJWT, {
         secret: process.env.JWTSECRET,
