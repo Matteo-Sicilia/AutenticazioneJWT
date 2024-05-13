@@ -1,4 +1,5 @@
 import S from "fluent-json-schema";
+import pg from "pg";
 
 const bodySchema = S.object()
     .prop("username", S.string().required())
@@ -12,7 +13,18 @@ export default async function (app) {
             [username, password]
         );
 
-        app.log.warn(result.rows);
-        return { hello: "world" };
+        if (result.rows.length !== 1) {
+            throw app.httpErrors.unauthorized("Invalid credentials");
+        }
+
+        const user = result.rows[0];
+
+        const payload = {
+            userId: user.id,
+            role: username === "admin" ? "admin" : "standard",
+        };
+
+        const accessToken = app.jwt.sign({ payload }, {expiresIn: "1h"});
+        return { accessToken: accessToken };
     });
 }
