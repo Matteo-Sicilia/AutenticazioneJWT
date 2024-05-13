@@ -5,7 +5,7 @@ const bodySchema = S.object()
     .prop("password", S.string().required());
 
 export default async function (app) {
-    app.get("/", { request: { body: bodySchema } }, async (req, res) => {
+    app.post("/", { schema: { body: bodySchema } }, async (req, res) => {
         app.log.info(req.body);
         return { hello: "world" };
     });
