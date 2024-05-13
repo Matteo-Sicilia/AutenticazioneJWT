@@ -3,11 +3,11 @@ import fastifyPostgres from "@fastify/postgres";
 
 async function database(app) {
     await app.register(fastifyPostgres, {
-        host: "127.0.0.1",
+        host: process.env.DB_HOST,
         port: 8080,
         database: "lezioni_node",
-        user: "postgres",
-        password: "pinocembro",
+        user: process.env.DB_USER,
+        password: processes.env.DBPASS,
     });
 }
 

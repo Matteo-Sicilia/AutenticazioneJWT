@@ -1,0 +1,14 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 8080,
+            "askForPassword": true,
+            "driver": "PostgreSQL",
+            "name": "WSLPostgres",
+            "database": "lezioni_node",
+            "username": "postgres"
+        }
+    ]
+}
