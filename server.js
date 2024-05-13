@@ -5,9 +5,21 @@ import fastifySensible from "@fastify/sensible";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export default async function 
+export default async function createServer() {
+    const app = Fastify({
+        logger: true,
+    });
 
+    await app.register(fastifySensible);
 
-export default async function createServer(){
+    await app.register(autoload, {
+        dir: join(__dirname, "routes"),
+        options: { prefix: "/api" },
+        forceESM: true,
+    });
 
+    await app.ready();
+    console.log(app.printRoutes());
+
+    return app;
 }
