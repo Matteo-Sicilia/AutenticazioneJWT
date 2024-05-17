@@ -7,7 +7,7 @@ async function database(app) {
         port: 8080,
         database: "lezioni_node",
         user: process.env.DB_USER,
-        password: processes.env.DBPASS,
+        password: process.env.DBPASS,
     });
 }
 
