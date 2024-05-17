@@ -11,9 +11,10 @@ export default async function (app) {
                     "SELECT * FROM users WHERE id = $1",
                     [payload.userId]
                 );
+                return result.rows;
             }
         } catch (e) {
-            throw app.httpErrors.unauthorized("Invalid token");
+            throw new app.httpErrors.unauthorized();
         }
     });
 }

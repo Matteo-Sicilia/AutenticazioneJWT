@@ -1,8 +1,8 @@
 import Fastify from "fastify";
-import autoload from "@fastify/autoload";
+import autoLoad from "@fastify/autoload";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
 import fastifySensible from "@fastify/sensible";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
 import "dotenv/config";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -17,9 +17,12 @@ export default async function createServer() {
         },
     });
 
-    await app.register(fastifySensible);
+    await app.register(autoLoad, {
+        dir: join(__dirname, "plugins"),
+        forceESM: true,
+    });
 
-    await app.register(autoload, {
+    await app.register(autoLoad, {
         dir: join(__dirname, "routes"),
         options: { prefix: "/api" },
         forceESM: true,

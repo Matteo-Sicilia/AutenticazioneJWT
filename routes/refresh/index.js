@@ -1,16 +1,20 @@
 import S from "fluent-json-schema";
 
-const bodySchema = S.object()
-    .prop("username", S.string().required())
-    .prop("password", S.string().required());
+const bodySchema = S.object().prop("refreshToken", S.string().required());
 
 export default async function (app) {
     app.post("/", { schema: { body: bodySchema } }, async (req, res) => {
-        const { username, password } = req.body;
-        const result = await app.pg.query(
-            "SELECT * FROM users WHERE username = $1 AND password = $2",
-            [username, password]
-        );
+        const {
+            payload: { userId, refresh },
+        } = app.jwt.verify(req.body.refreshToken);
+
+        if (refresh !== true) {
+            throw new app.httpErrors.badRequest();
+        }
+
+        const result = await app.pg.query("SELECT * FROM users WHERE id = $1", [
+            userId,
+        ]);
 
         if (result.rows.length !== 1) {
             throw new app.httpErrors.unauthorized();
@@ -20,7 +24,7 @@ export default async function (app) {
 
         const payload = {
             userId: user.id,
-            role: username === "admin" ? "admin" : "standard",
+            role: user.username === "admin" ? "admin" : "standard",
         };
 
         const refreshPayload = {
